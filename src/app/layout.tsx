@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "./components/AuthProvider";
+import { Toaster } from "./components/ui/toaster";
+
+const inter = Inter({ subsets: ["latin"] });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,15 +24,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.className} bg-gray-900 text-zinc-100 ${geistSans.variable} ${geistMono.variable}`}
       >
-        {children}
+        <AuthProvider>
+          {/* konten utama, tanpa pb-24 supaya tidak ada space aneh */}
+          <main className="min-h-screen">{children}</main>
+
+          {/* toaster notification */}
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );
