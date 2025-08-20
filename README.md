@@ -115,19 +115,19 @@ anime-Watchlist/
 
 Saya membuat project Anime Universe – Watchlist & Tracker sebagai media pembelajaran pribadi. Ada beberapa alasan utama mengapa project ini saya kerjakan:
 
-📡 Belajar API – Saya ingin memahami bagaimana cara mengambil data dari API publik (Jikan API), mengolah response JSON, dan menampilkannya dalam aplikasi web.
+- 📡 Belajar API – Saya ingin memahami bagaimana cara mengambil data dari API publik (Jikan API), mengolah response JSON, dan menampilkannya dalam aplikasi web.
 
-⚛️ Mendalami Next.js & React – Project ini menjadi sarana saya untuk mengeksplorasi Next.js (App Router), routing dinamis, serta konsep server & client components.
+- ⚛️ Mendalami Next.js & React – Project ini menjadi sarana saya untuk mengeksplorasi Next.js (App Router), routing dinamis, serta konsep server & client components.
 
-📘 Mengenal TypeScript (TSX) – Dengan menggunakan TypeScript, saya belajar menulis kode yang lebih terstruktur, aman, dan mudah dikelola.
+- 📘 Mengenal TypeScript (TSX) – Dengan menggunakan TypeScript, saya belajar menulis kode yang lebih terstruktur, aman, dan mudah dikelola.
 
-🔐 Eksperimen dengan Firebase – Saya ingin mengetahui bagaimana autentikasi dan database real-time bekerja dalam aplikasi modern.
+- 🔐 Eksperimen dengan Firebase – Saya ingin mengetahui bagaimana autentikasi dan database real-time bekerja dalam aplikasi modern.
 
-🎨 Meningkatkan kemampuan UI/UX – Saya memanfaatkan TailwindCSS dan animasi untuk membuat antarmuka yang menarik dan interaktif.
+- 🎨 Meningkatkan kemampuan UI/UX – Saya memanfaatkan TailwindCSS dan animasi untuk membuat antarmuka yang menarik dan interaktif.
 
-🌍 Lebih mengenal dunia teknologi – Melalui project ini, saya bisa memahami alur kerja pengembangan aplikasi web modern, mulai dari frontend, backend, hingga integrasi layanan pihak ketiga.
+- 🌍 Lebih mengenal dunia teknologi – Melalui project ini, saya bisa memahami alur kerja pengembangan aplikasi web modern, mulai dari frontend, backend, hingga integrasi layanan pihak ketiga.
 
-🤖 Pemanfaatan AI – Dalam proses pengembangan project ini, saya juga memanfaatkan bantuan AI untuk memberikan ide, membantu penulisan kode, dan menyusun dokumentasi agar lebih terstruktur.
+- 🤖 Pemanfaatan AI – Dalam proses pengembangan project ini, saya juga memanfaatkan bantuan AI untuk memberikan ide, membantu penulisan kode, dan menyusun dokumentasi agar lebih terstruktur.
 
 ---
 
