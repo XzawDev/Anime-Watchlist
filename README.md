@@ -1,6 +1,6 @@
-🌌 Anime Universe – Watchlist & Tracker
+# 🌌 Anime Universe – Watchlist & Tracker
 
-![Next.js](https://img.shields.io/badge/Next.js-13-black?style=for-the-badge&logo=next.js)  
+![Next.js](https://img.shields.io/badge/Next.js-15.4.7-black?style=for-the-badge&logo=next.js)  
 ![Firebase](https://img.shields.io/badge/Firebase-Backend-orange?style=for-the-badge&logo=firebase)  
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-Design-blue?style=for-the-badge&logo=tailwindcss)  
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)  
@@ -11,39 +11,35 @@ watchlist, melacak progress episode, dan mengatur profil pribadi.
 
 ---
 
-📸 Preview
+## 📸 Preview
 
 [Preview Screenshot]
 (Tambahkan screenshot aplikasi di sini)
 
 ---
 
-🚀 Fitur Utama
+## 🚀 Fitur Utama
 
-- 🔍 Cari & Temukan Anime – Trending, populer, movie top, dan yang
-  akan datang.
-- 🎬 Detail Anime Lengkap – Score, genre, sinopsis, studio, rating,
-  dan informasi lainnya.
-- 📑 Watchlist Pribadi – Simpan anime favoritmu dan kelola koleksi
-  pribadi.
-- ✅ Progress Tracker – Tandai episode yang sudah ditonton, tampilkan
-  persentase progress.
-- 👤 Profil Pengguna – Ubah username, bio, lokasi, dan genre favorit.
-- 🔐 Autentikasi & Keamanan – Login dengan Firebase, ganti password,
-  dan kelola akun.
+- 🔍 **Cari & Temukan Anime** – Trending, populer, movie top, dan yang akan datang.
+- 🎬 **Detail Anime Lengkap** – Score, genre, sinopsis, studio, rating, dan informasi lainnya.
+- 📑 **Watchlist Pribadi** – Simpan anime favoritmu dan kelola koleksi pribadi.
+- ✅ **Progress Tracker** – Tandai episode yang sudah ditonton, tampilkan persentase progress.
+- 👤 **Profil Pengguna** – Ubah username, bio, lokasi, dan genre favorit.
+- 🔐 **Autentikasi & Keamanan** – Login dengan Firebase, ganti password, dan kelola akun.
 
 ---
 
-🛠️ Teknologi yang Digunakan
+## 🛠️ Teknologi yang Digunakan
 
-- Frontend: Next.js 14+, React, TypeScript
-- Styling: TailwindCSS, Framer Motion
-- Backend & Auth: Firebase Firestore, Firebase Auth
-- API Data: Jikan API (MyAnimeList Unofficial API)
+- **Frontend**: [Next.js 15+](https://nextjs.org/), [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [TailwindCSS](https://tailwindcss.com/), [Framer Motion](https://www.framer.com/motion/)
+- **Backend & Auth**: [Firebase Firestore](https://firebase.google.com/), Firebase Auth
+- **API Data**: [Jikan API](https://jikan.moe/) (MyAnimeList Unofficial API)
 
 ---
 
-📂 Struktur Halaman Utama
+## 📂 Struktur Halaman Utama
+
 ```
 anime-Watchlist/
 ├── app/
@@ -71,39 +67,47 @@ anime-Watchlist/
 ├── public/
 └── package.json
 ```
+
 ---
 
-⚡ Cara Menjalankan Project
+## ⚡ Cara Menjalankan Project
 
-1.  Clone repo ini
+1. **Clone repo ini**
 
-        git clone https://github.com/username/anime-watchlist.git
-        cd anime-watchlist
+   ```bash
+   git clone https://github.com/username/anime-watchlist.git
+   cd anime-watchlist
+   ```
 
-2.  Install dependencies
+2. **Install dependencies**
 
-        npm install
+   ```bash
+   npm install
+   ```
 
-3.  Konfigurasi Firebase
+3. **Konfigurasi Firebase**
 
-    - Buat project Firebase baru
+   - Buat project Firebase baru
+   - Tambahkan file `.env.local` di root project dengan konfigurasi:
+     ```env
+     NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+     NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
+     NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+     NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_bucket
+     NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+     NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+     ```
 
-    - Tambahkan file .env.local di root project dengan konfigurasi:
+4. **Jalankan server development**
 
-          NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
-          NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_bucket
-          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-          NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+   ```bash
+   npm run dev
+   ```
 
-4.  Jalankan server development
-
-        npm run dev
-
-5.  Buka di browser:
-
-        http://localhost:3000
+5. Buka di browser:
+   ```
+   http://localhost:3000
+   ```
 
 ---
 
@@ -114,4 +118,4 @@ ajukan Pull Request.
 
 ---
 
-Dibuat dengan ❤️ dan ☕ oleh penggemar anime untuk penggemar anime.
+> Dibuat dengan ❤️ dan ☕ oleh penggemar anime untuk penggemar anime.
