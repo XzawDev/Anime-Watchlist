@@ -41,7 +41,7 @@ watchlist, melacak progress episode, dan mengatur profil pribadi.
 ## 📂 Struktur Halaman Utama
 
 ```
-anime-Watchlist/
+anime-watchlist/
 ├── app/
 │ ├── anime/
 │ │ └── [id]/
