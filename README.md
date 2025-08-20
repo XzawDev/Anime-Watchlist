@@ -36,7 +36,7 @@ watchlist, melacak progress episode, dan mengatur profil pribadi.
 
 🛠️ Teknologi yang Digunakan
 
-- Frontend: Next.js 13+, React, TypeScript
+- Frontend: Next.js 14+, React, TypeScript
 - Styling: TailwindCSS, Framer Motion
 - Backend & Auth: Firebase Firestore, Firebase Auth
 - API Data: Jikan API (MyAnimeList Unofficial API)
@@ -45,13 +45,31 @@ watchlist, melacak progress episode, dan mengatur profil pribadi.
 
 📂 Struktur Halaman Utama
 
-- / → Halaman utama (Trending, Popular, Top Movies, Upcoming, Filter
-  Genre)
-- /dashboard → Watchlist pengguna
-- /dashboard/anime/:id → Detail anime dalam watchlist + progress
-  episode
-- /profile → Pengaturan profil & akun
-- /login → Halaman autentikasi
+anime-watchlist/
+├── app/
+│ ├── anime/
+│ │ └── [id]/
+│ │ └── page.tsx
+│ ├── dashboard/
+│ │ ├── anime/
+│ │ │ └── [id]/
+│ │ │ └── page.tsx
+│ │ └── page.tsx
+│ ├── components/
+│ │ ├── AddToWatchlist.tsx
+│ │ ├── AnimeCarousel.tsx
+│ │ ├── AnimeGrid.tsx
+│ │ ├── AuthProvider.tsx
+│ │ ├── GenreFilter.tsx
+│ │ ├── LoadingSpinner.tsx
+│ │ ├── Navbar.tsx
+│ │ └── SearchBar.tsx
+│ ├── lib/
+│ │ ├── firebase.ts
+│ │ └── jikan.ts
+│ └── page.tsx
+├── public/
+└── package.json
 
 ---
 
@@ -89,15 +107,6 @@ watchlist, melacak progress episode, dan mengatur profil pribadi.
 
 ---
 
-🌟 Roadmap / To-Do
-
-- ☐ Tambah dark/light mode toggle
-- ☐ Fitur rekomendasi anime berdasarkan genre favorit
-- ☐ Integrasi login via Google / GitHub
-- ☐ Export/Import watchlist
-
----
-
 🤝 Kontribusi
 
 Kontribusi sangat terbuka! Silakan fork repo ini, buat branch baru, dan
@@ -105,10 +114,4 @@ ajukan Pull Request.
 
 ---
 
-📜 Lisensi
-
-MIT License © 2025 Anime Universe
-
----
-
-Dibuat dengan ❤️ oleh penggemar anime untuk penggemar anime.
+Dibuat dengan ❤️ dan ☕ oleh penggemar anime untuk penggemar anime.
