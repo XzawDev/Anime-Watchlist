@@ -45,29 +45,29 @@ watchlist, melacak progress episode, dan mengatur profil pribadi.
 
 📂 Struktur Halaman Utama
 
-anime-watchlist/
+anime-universe/
 ├── app/
-│ ├── anime/
-│ │ └── [id]/
-│ │ └── page.tsx
-│ ├── dashboard/
-│ │ ├── anime/
-│ │ │ └── [id]/
-│ │ │ └── page.tsx
-│ │ └── page.tsx
-│ ├── components/
-│ │ ├── AddToWatchlist.tsx
-│ │ ├── AnimeCarousel.tsx
-│ │ ├── AnimeGrid.tsx
-│ │ ├── AuthProvider.tsx
-│ │ ├── GenreFilter.tsx
-│ │ ├── LoadingSpinner.tsx
-│ │ ├── Navbar.tsx
-│ │ └── SearchBar.tsx
-│ ├── lib/
-│ │ ├── firebase.ts
-│ │ └── jikan.ts
-│ └── page.tsx
+│   ├── anime/
+│   │   └── [id]/
+│   │       └── page.tsx
+│   ├── dashboard/
+│   │   ├── anime/
+│   │   │   └── [id]/
+│   │   │       └── page.tsx
+│   │   └── page.tsx
+│   ├── components/
+│   │   ├── AddToWatchlist.tsx
+│   │   ├── AnimeCarousel.tsx
+│   │   ├── AnimeGrid.tsx
+│   │   ├── AuthProvider.tsx
+│   │   ├── GenreFilter.tsx
+│   │   ├── LoadingSpinner.tsx
+│   │   ├── Navbar.tsx
+│   │   └── SearchBar.tsx
+│   ├── lib/
+│   │   ├── firebase.ts
+│   │   └── jikan.ts
+│   └── page.tsx
 ├── public/
 └── package.json
 
