@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useAuth } from "../components/AuthProvider";
 import {
   Camera,
@@ -13,6 +14,7 @@ import {
   Key,
   Eye,
   EyeOff,
+  LogIn,
 } from "lucide-react";
 import {
   doc,
@@ -61,6 +63,7 @@ interface PasswordData {
 
 export default function ProfilePage() {
   const { user } = useAuth();
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [watchlist, setWatchlist] = useState<WatchlistItem[]>([]);
@@ -86,7 +89,10 @@ export default function ProfilePage() {
 
   // Fetch user profile data and watchlist
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
     const fetchUserData = async () => {
       try {
@@ -150,6 +156,10 @@ export default function ProfilePage() {
 
     fetchUserData();
   }, [user]);
+
+  const handleLoginRedirect = () => {
+    router.push("/");
+  };
 
   const handleSave = async () => {
     if (!user) return;
@@ -318,9 +328,16 @@ export default function ProfilePage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-indigo-900">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white mb-4">Please sign in</h1>
-          <p className="text-gray-300">
+          <p className="text-gray-300 mb-6">
             You need to be signed in to access your profile
           </p>
+          <button
+            onClick={handleLoginRedirect}
+            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors mx-auto"
+          >
+            <LogIn className="h-5 w-5" />
+            <span>Login</span>
+          </button>
         </div>
       </div>
     );

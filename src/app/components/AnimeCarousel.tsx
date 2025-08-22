@@ -1,4 +1,3 @@
-// components/AnimeCarousel.tsx
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -7,19 +6,30 @@ import AnimeCard from "./AnimeCard";
 
 // Define TypeScript interface for the anime object
 interface Anime {
-  mal_id: number;
-  title?: string;
-  score?: number | string;
-  episodes?: number;
-  images?: {
-    jpg?: {
-      image_url: string;
-    };
+  id: number;
+  title: {
+    romaji?: string;
+    english?: string;
+    native?: string;
   };
-  synopsis?: string;
-  type?: string;
-  year?: number;
+  coverImage: {
+    large: string;
+    extraLarge?: string;
+    color?: string;
+  };
+  bannerImage?: string;
+  averageScore?: number;
+  episodes?: number;
+  format?: string;
   status?: string;
+  season?: string;
+  seasonYear?: number;
+  genres?: string[];
+  nextAiringEpisode?: {
+    episode: number;
+    airingAt: number;
+    timeUntilAiring: number;
+  };
 }
 
 const AnimeCarousel = ({ animeList }: { animeList: Anime[] }) => {
@@ -55,9 +65,9 @@ const AnimeCarousel = ({ animeList }: { animeList: Anime[] }) => {
         className="flex overflow-x-auto scrollbar-hide space-x-4 pb-4 -mx-4 px-4"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        {animeList.map((anime) => (
+        {animeList.map((anime, index) => (
           <div
-            key={anime.mal_id}
+            key={anime.id || `anime-${index}`}
             className="flex-shrink-0 w-48 sm:w-56 md:w-64"
           >
             <AnimeCard anime={anime} />

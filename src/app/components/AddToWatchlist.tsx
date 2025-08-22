@@ -8,17 +8,28 @@ import { Plus, Check } from "lucide-react";
 import { doc, setDoc, getDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { toast } from "sonner";
+import { getAnimeByAnilistId } from "../lib/anilist-service";
 
 // Define TypeScript interface for the anime object
 interface Anime {
-  mal_id: number;
-  title?: string;
-  images?: {
-    jpg?: {
-      image_url: string;
-    };
+  id: number;
+  title: {
+    romaji?: string;
+    english?: string;
+    native?: string;
+  };
+  coverImage: {
+    large?: string;
+    extraLarge?: string;
+    color?: string;
   };
   episodes?: number;
+  status?: string;
+  nextAiringEpisode?: {
+    episode: number;
+    airingAt: number;
+    timeUntilAiring: number;
+  };
 }
 
 export default function AddToWatchlist({
@@ -36,14 +47,14 @@ export default function AddToWatchlist({
     if (!user) return;
 
     const checkWatchlist = async () => {
-      const animeRef = doc(db, `users/${user.uid}/watchlist/${anime.mal_id}`);
+      const animeRef = doc(db, `users/${user.uid}/watchlist/${anime.id}`);
       const docSnap = await getDoc(animeRef);
       setIsInWatchlist(docSnap.exists());
       setLoading(false);
     };
 
     checkWatchlist();
-  }, [user, anime.mal_id]);
+  }, [user, anime.id]);
 
   const toggleWatchlist = async () => {
     if (!user) {
@@ -53,18 +64,25 @@ export default function AddToWatchlist({
 
     try {
       if (isInWatchlist) {
-        const animeRef = doc(db, `users/${user.uid}/watchlist/${anime.mal_id}`);
+        const animeRef = doc(db, `users/${user.uid}/watchlist/${anime.id}`);
         await deleteDoc(animeRef);
         setIsInWatchlist(false);
         toast.success("Removed from watchlist");
       } else {
-        const animeRef = doc(db, `users/${user.uid}/watchlist/${anime.mal_id}`);
+        // Fetch detailed anime info from AniList
+        const detailedAnime = await getAnimeByAnilistId(anime.id);
+
+        const animeRef = doc(db, `users/${user.uid}/watchlist/${anime.id}`);
         await setDoc(animeRef, {
-          title: anime.title,
-          image: anime.images?.jpg?.image_url || "",
-          totalEpisodes: anime.episodes,
+          title:
+            anime.title.english ||
+            anime.title.romaji ||
+            anime.title.native ||
+            "Unknown Title",
+          image: anime.coverImage.large || "/placeholder-image.jpg",
+          totalEpisodes: detailedAnime?.episodes || anime.episodes || 0,
           episodesWatched: [],
-          malId: anime.mal_id, // Add this line to store the MAL ID
+          anilistId: anime.id, // Store AniList ID for future reference
         });
         setIsInWatchlist(true);
         toast.success("Added to watchlist");

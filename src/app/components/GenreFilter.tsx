@@ -1,11 +1,10 @@
 // components/GenreFilter.tsx
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-// Define TypeScript interface for the genre object
 interface Genre {
-  mal_id: number;
+  id: number;
   name: string;
 }
 
@@ -17,13 +16,21 @@ const GenreFilter = ({
   selectedGenre: string;
 }) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const handleGenreClick = (genreId: string) => {
-    if (selectedGenre === genreId) {
-      router.push("/");
+  const handleGenreClick = (genreName: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (selectedGenre === genreName) {
+      // Remove genre filter if already selected
+      params.delete("genre");
     } else {
-      router.push(`/?genre=${genreId}`);
+      // Set the genre filter
+      params.set("genre", genreName);
+      params.delete("q"); // Clear search query when filtering by genre
     }
+
+    router.push(`/?${params.toString()}`);
   };
 
   return (
@@ -39,10 +46,10 @@ const GenreFilter = ({
       <div className="flex flex-wrap gap-2">
         {genres.map((genre) => (
           <button
-            key={genre.mal_id}
-            onClick={() => handleGenreClick(genre.mal_id.toString())}
+            key={genre.id}
+            onClick={() => handleGenreClick(genre.name)}
             className={`px-4 py-2 text-sm rounded-full border transition-all duration-200 ${
-              selectedGenre === genre.mal_id.toString()
+              selectedGenre === genre.name
                 ? "bg-gradient-to-r from-fuchsia-600 to-purple-700 border-fuchsia-500/30 text-white shadow-lg shadow-fuchsia-500/20"
                 : "border-white/10 bg-white/5 text-zinc-300 hover:bg-white/10 hover:text-white"
             }`}

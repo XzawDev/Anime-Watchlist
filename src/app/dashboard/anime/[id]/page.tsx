@@ -1,42 +1,52 @@
 "use client";
-
-import { useEffect, useState, use } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../../components/AuthProvider";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Star, ChevronLeft, Check } from "lucide-react";
+import { formatSynopsis } from "../../../lib/utils";
+import { Star, ChevronLeft, Check, Clock } from "lucide-react";
 import { toast } from "sonner";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 import EpisodeDialog from "../../../components/EpisodeDialog";
+import { getAnimeByAnilistId } from "../../../lib/anilist-service";
 
-// Add proper type definitions
-interface JikanAnime {
-  title_japanese?: string;
-  synopsis?: string;
-  score?: number;
-  type?: string;
-  status?: string;
-  aired?: {
-    string?: string;
+// Type definitions matching AniList API structure
+// Update the AniListAnime interface to match the actual API response
+interface AniListAnime {
+  id: number;
+  title: {
+    english?: string;
+    romaji?: string;
+    native?: string;
   };
+  description?: string;
+  averageScore?: number;
+  format?: string;
+  status?: string;
   season?: string;
-  year?: number;
+  seasonYear?: number;
+  episodes?: number;
+  duration?: number;
+  genres?: string[];
+  coverImage: {
+    large?: string;
+    extraLarge?: string;
+    color?: string;
+  };
+  bannerImage?: string;
   studios?: Array<{
+    id: number;
     name: string;
   }>;
   source?: string;
-  rating?: string;
-  genres?: Array<{
-    mal_id: number;
-    name: string;
-  }>;
-  images?: {
-    jpg: {
-      large_image_url: string;
-    };
+  isAdult?: boolean;
+  nextAiringEpisode?: {
+    airingAt: number;
+    timeUntilAiring: number;
+    episode: number;
   };
 }
 
@@ -46,56 +56,125 @@ interface WatchlistAnime {
   image: string;
   totalEpisodes: number;
   episodesWatched: number[];
-  malId?: number;
+  anilistId: number;
 }
 
-export default function WatchlistAnimeDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+interface AiringSchedule {
+  episode: number;
+  airingAt: number;
+  timeUntilAiring: number;
+}
+
+export default function WatchlistAnimeDetailPage() {
   const router = useRouter();
+  const params = useParams();
   const { user } = useAuth();
   const [anime, setAnime] = useState<WatchlistAnime | null>(null);
   const [loading, setLoading] = useState(true);
   const [showDialog, setShowDialog] = useState(false);
   const [selectedEpisode, setSelectedEpisode] = useState<number | null>(null);
-  const [jikanData, setJikanData] = useState<JikanAnime | null>(null);
+  const [anilistData, setAnilistData] = useState<AniListAnime | null>(null);
+  const [releasedEpisodes, setReleasedEpisodes] = useState<number>(0);
+  const [nextAiringEpisode, setNextAiringEpisode] =
+    useState<AiringSchedule | null>(null);
 
-  // Unwrap params using React.use()
-  const { id } = use(params);
+  // Get id from params
+  const id = params.id as string;
 
-  // Fetch anime from Firestore
+  // Format time until next episode
+  const formatTimeUntilAiring = (seconds: number) => {
+    if (!seconds) return "";
+
+    const days = Math.floor(seconds / (3600 * 24));
+    const hours = Math.floor((seconds % (3600 * 24)) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+
+    if (days > 0) {
+      return `${days} day${days > 1 ? "s" : ""} ${hours} hour${
+        hours > 1 ? "s" : ""
+      }`;
+    } else if (hours > 0) {
+      return `${hours} hour${hours > 1 ? "s" : ""} ${minutes} minute${
+        minutes > 1 ? "s" : ""
+      }`;
+    } else {
+      return `${minutes} minute${minutes > 1 ? "s" : ""}`;
+    }
+  };
+
+  // Fetch anime from Firestore and AniList
   useEffect(() => {
     if (!user) return;
 
     const fetchAnime = async () => {
       setLoading(true);
       try {
+        // First get the watchlist item from Firestore
         const docRef = doc(db, `users/${user.uid}/watchlist/${id}`);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const data = docSnap.data() as WatchlistAnime;
-          // Ensure the ID is set correctly
           setAnime({
             ...data,
-            id: id, // Make sure the ID is set to the document ID
+            id: id,
           });
 
-          // If we have MAL ID, fetch additional details from our API
-          if (data.malId) {
+          // Then fetch detailed info from AniList
+          if (data.anilistId) {
             try {
-              const response = await fetch(`/api/anime/${data.malId}`);
-              if (response.ok) {
-                const jikanData = await response.json();
-                setJikanData(jikanData);
-              } else {
-                console.error("Failed to fetch anime details from Jikan API");
+              const anilistAnime = await getAnimeByAnilistId(data.anilistId);
+              if (anilistAnime) {
+                setAnilistData(anilistAnime);
+
+                // Set released episodes based on status
+                if (
+                  anilistAnime.status === "RELEASING" &&
+                  anilistAnime.nextAiringEpisode
+                ) {
+                  // For airing anime, released episodes = next episode - 1
+                  setReleasedEpisodes(
+                    anilistAnime.nextAiringEpisode.episode - 1
+                  );
+                  setNextAiringEpisode({
+                    episode: anilistAnime.nextAiringEpisode.episode,
+                    airingAt: anilistAnime.nextAiringEpisode.airingAt,
+                    timeUntilAiring:
+                      anilistAnime.nextAiringEpisode.timeUntilAiring,
+                  });
+                } else {
+                  // For completed anime, use total episodes
+                  setReleasedEpisodes(
+                    anilistAnime.episodes || data.totalEpisodes || 0
+                  );
+                }
+
+                // Update Firestore with accurate episode count if different
+                if (
+                  anilistAnime.episodes &&
+                  anilistAnime.episodes !== data.totalEpisodes
+                ) {
+                  await updateDoc(docRef, {
+                    totalEpisodes: anilistAnime.episodes,
+                  });
+                  setAnime((prev) =>
+                    prev
+                      ? { ...prev, totalEpisodes: anilistAnime.episodes || 0 }
+                      : null
+                  );
+                }
               }
             } catch (error) {
-              console.error("Error fetching anime details:", error);
+              console.error(
+                "Error fetching anime details from AniList:",
+                error
+              );
+              // Fallback to stored data
+              setReleasedEpisodes(data.totalEpisodes || 0);
             }
+          } else {
+            // No AniList ID available, use stored data
+            setReleasedEpisodes(data.totalEpisodes || 0);
           }
         } else {
           toast.error("Anime not found in your watchlist");
@@ -127,7 +206,6 @@ export default function WatchlistAnimeDetailPage({
     }
 
     try {
-      // Use the ID from params (which is the document ID) instead of anime.id
       const animeRef = doc(db, `users/${user.uid}/watchlist/${id}`);
       await updateDoc(animeRef, {
         episodesWatched: newEpisodes,
@@ -150,10 +228,11 @@ export default function WatchlistAnimeDetailPage({
     }
   };
 
-  // Calculate progress
-  const progressPercentage = anime?.totalEpisodes
-    ? (anime.episodesWatched.length / anime.totalEpisodes) * 100
-    : 0;
+  // Calculate progress based on released episodes
+  const progressPercentage =
+    releasedEpisodes > 0 && anime
+      ? (anime.episodesWatched.length / releasedEpisodes) * 100
+      : 0;
 
   if (loading) {
     return (
@@ -187,10 +266,10 @@ export default function WatchlistAnimeDetailPage({
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-[#0a0a0f] via-[#111122] to-[#0a0a0f] text-white">
       {/* Background Banner */}
-      {jikanData?.images?.jpg?.large_image_url && (
+      {anilistData?.bannerImage && (
         <div className="absolute inset-0">
           <Image
-            src={jikanData.images.jpg.large_image_url}
+            src={anilistData.bannerImage}
             alt={anime.title}
             fill
             priority
@@ -216,13 +295,18 @@ export default function WatchlistAnimeDetailPage({
           <div className="w-full md:w-1/3">
             <div className="rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_40px_-10px_rgba(99,102,241,0.6)]">
               <Image
-                src={anime.image || "/placeholder-image.jpg"}
+                src={
+                  anilistData?.coverImage?.large ||
+                  anime.image ||
+                  "/placeholder-image.jpg"
+                }
                 alt={anime.title}
                 width={400}
                 height={600}
                 className="object-cover w-full h-full"
                 onError={(e) => {
-                  e.currentTarget.src = "/placeholder-image.jpg";
+                  const target = e.target as HTMLImageElement;
+                  target.src = "/placeholder-image.jpg";
                 }}
               />
             </div>
@@ -231,16 +315,16 @@ export default function WatchlistAnimeDetailPage({
             <div className="flex flex-wrap gap-3 mt-6">
               <div className="flex items-center gap-2 rounded-full border border-amber-500/30 bg-black/50 px-4 py-1.5 text-sm font-medium text-amber-400 hover:shadow-[0_0_12px_rgba(251,191,36,0.6)] transition">
                 <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                {jikanData?.score || "N/A"}
+                {anilistData?.averageScore || "N/A"}
               </div>
               <div className="rounded-full border border-sky-500/30 bg-sky-500/10 px-4 py-1.5 text-sm text-sky-300 hover:shadow-[0_0_12px_rgba(56,189,248,0.6)] transition">
-                {jikanData?.type || "Unknown"}
+                {anilistData?.format || "Unknown"}
               </div>
               <div className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-sm text-emerald-300 hover:shadow-[0_0_12px_rgba(52,211,153,0.6)] transition">
-                {anime.totalEpisodes || "?"} episodes
+                {releasedEpisodes || "?"} episodes
               </div>
               <div className="rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-1.5 text-sm text-violet-300 hover:shadow-[0_0_12px_rgba(167,139,250,0.6)] transition">
-                {jikanData?.status || "Unknown"}
+                {anilistData?.status || "Unknown"}
               </div>
             </div>
           </div>
@@ -250,9 +334,9 @@ export default function WatchlistAnimeDetailPage({
             <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent mb-2">
               {anime.title}
             </h1>
-            {jikanData?.title_japanese && (
+            {anilistData?.title?.native && (
               <h2 className="text-xl text-zinc-400 mb-8 italic">
-                {jikanData.title_japanese}
+                {anilistData.title.native}
               </h2>
             )}
 
@@ -261,8 +345,10 @@ export default function WatchlistAnimeDetailPage({
               <h3 className="text-2xl font-semibold mb-4 text-indigo-300">
                 Synopsis
               </h3>
-              <p className="text-lg leading-relaxed text-zinc-300 max-w-3xl">
-                {jikanData?.synopsis || "No synopsis available."}
+              <p className="text-lg leading-relaxed text-zinc-300 max-w-3xl whitespace-pre-line">
+                {anilistData?.description
+                  ? formatSynopsis(anilistData.description)
+                  : "No synopsis available."}
               </p>
             </div>
 
@@ -274,24 +360,24 @@ export default function WatchlistAnimeDetailPage({
                 </h3>
                 <ul className="space-y-2 text-sm text-zinc-300">
                   <li>
-                    <span className="font-medium text-white">Aired:</span>{" "}
-                    {jikanData?.aired?.string || "N/A"}
+                    <span className="font-medium text-white">Status:</span>{" "}
+                    {anilistData?.status || "N/A"}
                   </li>
                   <li>
                     <span className="font-medium text-white">Premiered:</span>{" "}
-                    {jikanData?.season} {jikanData?.year}
+                    {anilistData?.season} {anilistData?.seasonYear}
                   </li>
                   <li>
                     <span className="font-medium text-white">Studio:</span>{" "}
-                    {jikanData?.studios?.[0]?.name || "N/A"}
+                    {anilistData?.studios?.[0]?.name || "N/A"}
                   </li>
                   <li>
                     <span className="font-medium text-white">Source:</span>{" "}
-                    {jikanData?.source || "Unknown"}
+                    {anilistData?.source || "Unknown"}
                   </li>
                   <li>
-                    <span className="font-medium text-white">Rating:</span>{" "}
-                    {jikanData?.rating || "Unknown"}
+                    <span className="font-medium text-white">Duration:</span>{" "}
+                    {anilistData?.duration || "Unknown"} min
                   </li>
                 </ul>
               </div>
@@ -301,12 +387,12 @@ export default function WatchlistAnimeDetailPage({
                   Genres
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {jikanData?.genres?.map((genre) => (
+                  {anilistData?.genres?.map((genre, index) => (
                     <span
-                      key={genre.mal_id}
+                      key={index}
                       className="rounded-full border border-pink-500/30 bg-pink-500/10 px-3 py-1 text-xs text-pink-200 hover:shadow-[0_0_8px_rgba(236,72,153,0.6)] transition"
                     >
-                      {genre.name}
+                      {genre}
                     </span>
                   )) || (
                     <span className="text-zinc-400 text-sm">
@@ -357,7 +443,7 @@ export default function WatchlistAnimeDetailPage({
 
               <div className="flex justify-between text-xs text-zinc-400">
                 <span>Start</span>
-                <span>{anime.totalEpisodes || "?"} episodes</span>
+                <span>{releasedEpisodes || "?"} episodes</span>
               </div>
             </motion.div>
 
@@ -372,14 +458,28 @@ export default function WatchlistAnimeDetailPage({
                   Episodes
                 </h2>
                 <div className="text-zinc-400">
-                  {anime.totalEpisodes || "?"} episodes total
+                  {releasedEpisodes > 0
+                    ? `${releasedEpisodes} released`
+                    : "No episodes released yet"}
+                  {anilistData?.episodes && ` of ${anilistData.episodes} total`}
                 </div>
               </div>
 
-              {anime.totalEpisodes ? (
+              {/* Next episode airing info */}
+              {nextAiringEpisode && (
+                <div className="bg-blue-900/30 border border-blue-700/30 rounded-xl p-4 mb-6 flex items-center">
+                  <Clock className="h-5 w-5 text-blue-400 mr-2" />
+                  <span className="text-blue-300">
+                    Episode {nextAiringEpisode.episode} airing in{" "}
+                    {formatTimeUntilAiring(nextAiringEpisode.timeUntilAiring)}
+                  </span>
+                </div>
+              )}
+
+              {releasedEpisodes > 0 ? (
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
                   {Array.from(
-                    { length: anime.totalEpisodes },
+                    { length: releasedEpisodes },
                     (_, i) => i + 1
                   ).map((episode) => (
                     <motion.div
@@ -412,7 +512,19 @@ export default function WatchlistAnimeDetailPage({
                 </div>
               ) : (
                 <div className="text-center py-10 text-zinc-400">
-                  Episode count not available for this anime
+                  {nextAiringEpisode ? (
+                    <div>
+                      <p>No episodes released yet.</p>
+                      <p className="mt-2">
+                        Episode 1 airing in{" "}
+                        {formatTimeUntilAiring(
+                          nextAiringEpisode.timeUntilAiring
+                        )}
+                      </p>
+                    </div>
+                  ) : (
+                    "Episode information not available for this anime"
+                  )}
                 </div>
               )}
             </motion.div>

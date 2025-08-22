@@ -4,7 +4,7 @@
 ![Firebase](https://img.shields.io/badge/Firebase-Backend-orange?style=for-the-badge&logo=firebase)  
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-Design-blue?style=for-the-badge&logo=tailwindcss)  
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)  
-![Anime](https://img.shields.io/badge/Powered%20by-Jikan%20API-purple?style=for-the-badge&logo=graphql)
+![Anime](https://img.shields.io/badge/Powered%20by-AniList%20API-blue?style=for-the-badge&logo=graphql)
 
 ✨ Sebuah aplikasi web modern untuk menjelajahi anime, membuat
 watchlist, melacak progress episode, dan mengatur profil pribadi.
@@ -34,7 +34,7 @@ watchlist, melacak progress episode, dan mengatur profil pribadi.
 - **Frontend**: [Next.js 15+](https://nextjs.org/), [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [TailwindCSS](https://tailwindcss.com/), [Framer Motion](https://www.framer.com/motion/)
 - **Backend & Auth**: [Firebase Firestore](https://firebase.google.com/), Firebase Auth
-- **API Data**: [Jikan API](https://jikan.moe/) (MyAnimeList Unofficial API)
+- **API Data**: [AniList API](https://anilist.co/) (MyAnimeList Unofficial API)
 
 ---
 
@@ -53,16 +53,23 @@ anime-watchlist/
 │ │ └── page.tsx
 │ ├── components/
 │ │ ├── AddToWatchlist.tsx
+│ │ ├── AnimeCard.tsx
+│ │ ├── AnimeCardSip.tsx
 │ │ ├── AnimeCarousel.tsx
 │ │ ├── AnimeGrid.tsx
+│ │ ├── AnimeImage.tsx
 │ │ ├── AuthProvider.tsx
+│ │ ├── EpisodeDialog.tsx
+│ │ ├── EpisodeTracker.tsx
 │ │ ├── GenreFilter.tsx
 │ │ ├── LoadingSpinner.tsx
 │ │ ├── Navbar.tsx
-│ │ └── SearchBar.tsx
+│ │ ├── SearchBar.tsx
+│ │ └── WatchlistItems.tsx
 │ ├── lib/
-│ │ ├── firebase.ts
-│ │ └── jikan.ts
+│ │ ├── anilist-queries.ts
+│ │ ├── anilist-service.ts
+│ │ └── firebase.ts
 │ └── page.tsx
 ├── public/
 └── package.json
@@ -115,7 +122,7 @@ anime-watchlist/
 
 Saya membuat project Anime Universe – Watchlist & Tracker sebagai media pembelajaran pribadi. Ada beberapa alasan utama mengapa project ini saya kerjakan:
 
-- 📡 Belajar API – Saya ingin memahami bagaimana cara mengambil data dari API publik (Jikan API), mengolah response JSON, dan menampilkannya dalam aplikasi web.
+- 📡 Belajar API – Saya ingin memahami bagaimana cara mengambil data dari API publik (AniList API), mengolah response JSON, dan menampilkannya dalam aplikasi web.
 
 - ⚛️ Mendalami Next.js & React – Project ini menjadi sarana saya untuk mengeksplorasi Next.js (App Router), routing dinamis, serta konsep server & client components.
 

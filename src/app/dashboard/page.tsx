@@ -1,4 +1,3 @@
-// app/dashboard/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -18,7 +17,6 @@ import { Play, MoreVertical, Plus, Search } from "lucide-react";
 import Navbar from "../components/Navbar";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 interface WatchlistAnime {
   id: string;
@@ -26,7 +24,7 @@ interface WatchlistAnime {
   image: string;
   totalEpisodes: number;
   episodesWatched: number[];
-  malId?: number;
+  anilistId: number;
 }
 
 function WatchlistItem({
@@ -38,11 +36,10 @@ function WatchlistItem({
   onRemove: (id: string) => void;
   onMarkAllWatched: (id: string, totalEpisodes: number) => void;
 }) {
-  // Move hooks to the top level - always call hooks unconditionally
   const { user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Add safeguard for undefined anime - moved after hooks
+  // Add safeguard for undefined anime
   if (!anime) {
     return (
       <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-5">
@@ -60,7 +57,7 @@ function WatchlistItem({
   }
 
   const progressPercentage =
-    anime?.totalEpisodes && anime.totalEpisodes > 0
+    anime.totalEpisodes && anime.totalEpisodes > 0
       ? (anime.episodesWatched.length / anime.totalEpisodes) * 100
       : 0;
 
@@ -107,7 +104,7 @@ function WatchlistItem({
     >
       <div className="p-5">
         <div className="flex items-start gap-4">
-          {/* Make the image and title clickable */}
+          {/* Make image clickable */}
           <Link
             href={`/dashboard/anime/${anime.id}`}
             className="relative flex-shrink-0"
@@ -119,7 +116,8 @@ function WatchlistItem({
                 fill
                 className="object-cover"
                 onError={(e) => {
-                  e.currentTarget.src = "/placeholder-image.jpg";
+                  const target = e.target as HTMLImageElement;
+                  target.src = "/placeholder-image.jpg";
                 }}
               />
             </div>
@@ -127,7 +125,7 @@ function WatchlistItem({
 
           <div className="flex-1">
             <div className="flex justify-between items-start">
-              {/* Make the title clickable */}
+              {/* Make title clickable */}
               <Link href={`/dashboard/anime/${anime.id}`}>
                 <h3 className="font-semibold text-white line-clamp-2 hover:text-indigo-300 transition-colors">
                   {anime.title}
@@ -198,17 +196,9 @@ function WatchlistItem({
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const router = useRouter();
   const [watchlist, setWatchlist] = useState<WatchlistAnime[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!user && !loading) {
-      router.push("/login");
-    }
-  }, [user, loading, router]);
 
   useEffect(() => {
     if (!user) {
