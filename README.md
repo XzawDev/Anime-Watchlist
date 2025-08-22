@@ -149,7 +149,8 @@ Saya membuat project Anime Universe – Watchlist & Tracker sebagai media pembel
 
 Jika kamu punya saran, masukan, atau ingin berdiskusi seputar project ini,  
 silakan hubungi saya melalui DM Discord 🙌
-[![Discord](https://img.shields.io/badge/Discord-Join%20Chat-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discordapp.com/users/your-discord-id)
+
+[![Discord](https://img.shields.io/badge/Discord-Join%20Chat-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discordapp.com/users/717195113503260714)
 
 ---
 
