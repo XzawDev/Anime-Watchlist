@@ -13,8 +13,15 @@ watchlist, melacak progress episode, dan mengatur profil pribadi.
 
 ## 📸 Preview
 
-[Preview Screenshot]
-(Coming Soon)
+https://aniwatchlist.vercel.app/
+
+---
+
+## ⚠️ Status Project
+
+🚧 **Project ini masih dalam tahap pengembangan.**  
+Masih terdapat beberapa bug dan error yang perlu diperbaiki, serta fitur-fitur yang mungkin belum sepenuhnya berfungsi dengan baik.  
+Kontribusi, saran, dan masukan sangat diterima untuk membantu pengembangan lebih lanjut. 🙌
 
 ---
 
@@ -135,6 +142,14 @@ Saya membuat project Anime Universe – Watchlist & Tracker sebagai media pembel
 - 🌍 Lebih mengenal dunia teknologi – Melalui project ini, saya bisa memahami alur kerja pengembangan aplikasi web modern, mulai dari frontend, backend, hingga integrasi layanan pihak ketiga.
 
 - 🤖 Pemanfaatan AI – Dalam proses pengembangan project ini, saya juga memanfaatkan bantuan AI untuk memberikan ide, membantu penulisan kode, dan menyusun dokumentasi agar lebih terstruktur.
+
+---
+
+## 📬 Kontak & Diskusi
+
+Jika kamu punya saran, masukan, atau ingin berdiskusi seputar project ini,  
+silakan hubungi saya melalui DM Discord 🙌
+[![Discord](https://img.shields.io/badge/Discord-Join%20Chat-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discordapp.com/users/your-discord-id)
 
 ---
 
