@@ -269,12 +269,24 @@ export default function AnimeDetailPage() {
               priority
             />
           ) : (
-            <div className="w-full h-[400px] bg-gradient-to-r from-purple-900/50 to-indigo-900/50 flex items-center justify-center">
-              <div className="text-center">
-                <h1 className="text-4xl font-bold mb-2">{displayTitle}</h1>
-                <p className="text-purple-200">No banner available</p>
-              </div>
-            </div>
+            <Image
+              src={
+                anime.coverImage.extraLarge ||
+                anime.coverImage.large ||
+                "/placeholder-cover.jpg"
+              }
+              alt={displayTitle}
+              width={1200}
+              height={400}
+              className="w-full h-[400px] object-cover"
+              priority
+            />
+            // <div className="w-full h-[400px] bg-gradient-to-r from-purple-900/50 to-indigo-900/50 flex items-center justify-center">
+            //   <div className="text-center">
+            //     <h1 className="text-4xl font-bold mb-2">{displayTitle}</h1>
+            //     <p className="text-purple-200">No banner available</p>
+            //   </div>
+            // </div>
           )}
 
           <div className="absolute bottom-0 left-0 right-0 z-20 p-8">
