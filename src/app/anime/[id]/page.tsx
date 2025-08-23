@@ -252,15 +252,6 @@ export default function AnimeDetailPage() {
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             Back
           </button>
-
-          <div className="flex gap-2">
-            <button className="p-2 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 hover:bg-purple-900/30 transition-all">
-              <Share className="w-5 h-5" />
-            </button>
-            <button className="p-2 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 hover:bg-purple-900/30 transition-all">
-              <Download className="w-5 h-5" />
-            </button>
-          </div>
         </div>
 
         {/* Hero section with banner image */}
